@@ -608,26 +608,26 @@ namespace NadekoBot.Modules.Xp.Services
             using (var img = Image.Load(_images.XpCard))
             {
                 var username = stats.User.ToString();
-                var usernameFont = _fonts.NotoSansBold
+                var usernameFont = _fonts.UsernameFontFamily
                     .CreateFont(username.Length <= 6
                         ? 50
                         : 50 - username.Length);
 
-                img.DrawText(username, usernameFont, Rgba32.White,
+                img.DrawText("@" + username, usernameFont, Rgba32.White,
                     new PointF(130, 5));
                 // level
 
-                img.DrawText(stats.Global.Level.ToString(), _fonts.NotoSansBold.CreateFont(45), Rgba32.White,
+                img.DrawText(stats.Global.Level.ToString(), _fonts.LevelFont, Rgba32.White,
                     new PointF(47, 137));
 
-                img.DrawText(stats.Guild.Level.ToString(), _fonts.NotoSansBold.CreateFont(45), Rgba32.White,
+                img.DrawText(stats.Guild.Level.ToString(), _fonts.LevelFont, Rgba32.White,
                     new PointF(47, 285));
 
                 //club name
 
                 var clubName = stats.User.Club?.ToString() ?? "-";
 
-                var clubFont = _fonts.NotoSansBold
+                var clubFont = _fonts.ClubFontFamily
                     .CreateFont(clubName.Length <= 8
                         ? 35
                         : 35 - (clubName.Length / 2));
@@ -650,7 +650,7 @@ namespace NadekoBot.Modules.Xp.Services
                     new PointF(286 + (450 * (global.LevelXp / (float)global.RequiredXp)), 235),
                     new PointF(286, 235),
                 });
-                img.DrawText($"{global.LevelXp}/{global.RequiredXp}", _fonts.NotoSansBold.CreateFont(50), brush, pen,
+                img.DrawText($"{global.LevelXp}/{global.RequiredXp}", _fonts.XpFont, brush, pen,
                     new PointF(430, 130));
 
                 img.FillPolygon(xpBgBrush, new[] {
@@ -659,7 +659,7 @@ namespace NadekoBot.Modules.Xp.Services
                     new PointF(247 + (450 * (guild.LevelXp / (float)guild.RequiredXp)), 379),
                     new PointF(247, 379),
                 });
-                img.DrawText($"{guild.LevelXp}/{guild.RequiredXp}", _fonts.NotoSansBold.CreateFont(50), brush, pen,
+                img.DrawText($"{guild.LevelXp}/{guild.RequiredXp}", _fonts.XpFont, brush, pen,
                     new PointF(400, 270));
 
                 if (stats.FullGuildStats.AwardedXp != 0)
@@ -667,16 +667,16 @@ namespace NadekoBot.Modules.Xp.Services
                     var sign = stats.FullGuildStats.AwardedXp > 0
                         ? "+ "
                         : "";
-                    img.DrawText($"({sign}{stats.FullGuildStats.AwardedXp})", _fonts.NotoSansBold.CreateFont(25), brush, pen,
+                    img.DrawText($"({sign}{stats.FullGuildStats.AwardedXp})", _fonts.AwardedFont, brush, pen,
                         new PointF(445 - (Math.Max(0, (stats.FullGuildStats.AwardedXp.ToString().Length - 2)) * 5), 335));
                 }
 
                 //ranking
 
-                img.DrawText(stats.GlobalRanking.ToString(), _fonts.NotoSansBold.CreateFont(30), Rgba32.White,
+                img.DrawText(stats.GlobalRanking.ToString(), _fonts.RankFont, Rgba32.White,
                     new PointF(148, 170));
 
-                img.DrawText(stats.GuildRanking.ToString(), _fonts.NotoSansBold.CreateFont(30), Rgba32.White,
+                img.DrawText(stats.GuildRanking.ToString(), _fonts.RankFont, Rgba32.White,
                     new PointF(148, 317));
 
                 //time on this level
@@ -687,10 +687,10 @@ namespace NadekoBot.Modules.Xp.Services
                     return $"{offset.Days}d{offset.Hours}h{offset.Minutes}m";
                 }
 
-                img.DrawText(GetTimeSpent(stats.User.LastLevelUp), _fonts.NotoSansBold.CreateFont(20), Rgba32.White,
+                img.DrawText(GetTimeSpent(stats.User.LastLevelUp), _fonts.TimeFont, Rgba32.White,
                     new PointF(50, 197));
 
-                img.DrawText(GetTimeSpent(stats.FullGuildStats.LastLevelUp), _fonts.NotoSansBold.CreateFont(20), Rgba32.White,
+                img.DrawText(GetTimeSpent(stats.FullGuildStats.LastLevelUp), _fonts.TimeFont, Rgba32.White,
                     new PointF(50, 344));
                 //avatar
 

@@ -16,11 +16,6 @@ namespace NadekoBot.Core.Services.Impl
                     _fonts.Install(file);
                 }
 
-            NotoSansBold = _fonts.Find("NotoSans-Bold");
-            NotoSansBoldItalic = _fonts.Find("NotoSans-BoldItalic");
-            NotoSansItalic = _fonts.Find("NotoSans-Italic");
-            NotoSansRegular = _fonts.Find("NotoSans-Regular");
-
             UsernameFontFamily = _fonts.Find("Whitney-Bold");
             ClubFontFamily = _fonts.Find("Whitney-Bold");
             LevelFont = _fonts.Find("Whitney-Bold").CreateFont(45);
@@ -31,10 +26,6 @@ namespace NadekoBot.Core.Services.Impl
             RipNameFont = _fonts.Find("Whitney-Bold").CreateFont(20);
         }
 
-        public Font NotoSansRegular { get; }
-        public Font NotoSansItalic { get; }
-        public Font NotoSansBold { get; }
-        public Font NotoSansBoldItalic { get; }
         public Font LevelFont { get; }
         public Font XpFont { get; }
         public Font AwardedFont { get; }
