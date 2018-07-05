@@ -450,7 +450,7 @@ namespace NadekoBot.Modules.Searches
         public async Task Google([Remainder] string terms = null)
         {
             var oterms = terms?.Trim();
-            if (string.IsNullOrWhiteSpace(terms))
+            if (string.IsNullOrWhiteSpace(oterms))
                 return;
 
             terms = WebUtility.UrlEncode(oterms).Replace(' ', '+');
