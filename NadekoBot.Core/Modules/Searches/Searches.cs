@@ -449,13 +449,13 @@ namespace NadekoBot.Modules.Searches
         [NadekoCommand, Usage, Description, Aliases]
         public async Task Google([Remainder] string terms = null)
         {
-            terms = terms?.Trim();
+            var oterms = terms?.Trim();
             if (string.IsNullOrWhiteSpace(terms))
                 return;
 
-            terms = WebUtility.UrlEncode(terms).Replace(' ', '+');
+            terms = WebUtility.UrlEncode(oterms).Replace(' ', '+');
 
-            var fullQueryLink = $"https://www.google.ca/search?q={ terms }&safe=on&lr=lang_eng&hl=en";
+            var fullQueryLink = $"https://www.google.ca/search?q={ terms }&safe=on&lr=lang_eng&hl=en&ie=utf-8&oe=utf-8";
 
             using (var msg = new HttpRequestMessage(HttpMethod.Get, fullQueryLink))
             {
@@ -493,7 +493,7 @@ namespace NadekoBot.Modules.Searches
 
                     var embed = new EmbedBuilder()
                         .WithOkColor()
-                        .WithAuthor(eab => eab.WithName(GetText("search_for") + " " + terms.TrimTo(50))
+                        .WithAuthor(eab => eab.WithName(GetText("search_for") + " " + oterms.TrimTo(50))
                             .WithUrl(fullQueryLink)
                             .WithIconUrl("http://i.imgur.com/G46fm8J.png"))
                         .WithTitle(Context.User.ToString())
