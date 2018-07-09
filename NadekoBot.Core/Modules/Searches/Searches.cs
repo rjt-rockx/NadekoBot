@@ -311,18 +311,18 @@ namespace NadekoBot.Modules.Searches
         [NadekoCommand, Usage, Description, Aliases]
         public async Task Image([Remainder] string terms = null)
         {
-            terms = terms?.Trim();
-            if (string.IsNullOrWhiteSpace(terms))
+            var oterms = terms?.Trim();
+            if (string.IsNullOrWhiteSpace(oterms))
                 return;
 
-            terms = WebUtility.UrlEncode(terms).Replace(' ', '+');
+            terms = WebUtility.UrlEncode(oterms).Replace(' ', '+');
 
             try
             {
-                var res = await _google.GetImageAsync(terms).ConfigureAwait(false);
+                var res = await _google.GetImageAsync(oterms).ConfigureAwait(false);
                 var embed = new EmbedBuilder()
                     .WithOkColor()
-                    .WithAuthor(eab => eab.WithName(GetText("image_search_for") + " " + terms.TrimTo(50))
+                    .WithAuthor(eab => eab.WithName(GetText("image_search_for") + " " + oterms.TrimTo(50))
                         .WithUrl("https://www.google.rs/search?q=" + terms + "&source=lnms&tbm=isch")
                         .WithIconUrl("http://i.imgur.com/G46fm8J.png"))
                     .WithDescription(res.Link)
@@ -352,7 +352,7 @@ namespace NadekoBot.Modules.Searches
 
                     var embed = new EmbedBuilder()
                         .WithOkColor()
-                        .WithAuthor(eab => eab.WithName("Image Search For: " + terms.TrimTo(50))
+                        .WithAuthor(eab => eab.WithName(GetText("image_search_for") + " " + oterms.TrimTo(50))
                             .WithUrl(fullQueryLink)
                             .WithIconUrl("http://s.imgur.com/images/logo-1200-630.jpg?"))
                         .WithDescription(source)
@@ -366,16 +366,16 @@ namespace NadekoBot.Modules.Searches
         [NadekoCommand, Usage, Description, Aliases]
         public async Task RandomImage([Remainder] string terms = null)
         {
-            terms = terms?.Trim();
-            if (string.IsNullOrWhiteSpace(terms))
+            var oterms = terms?.Trim();
+            if (string.IsNullOrWhiteSpace(oterms))
                 return;
-            terms = WebUtility.UrlEncode(terms).Replace(' ', '+');
+            terms = WebUtility.UrlEncode(oterms).Replace(' ', '+');
             try
             {
-                var res = await _google.GetImageAsync(terms, new NadekoRandom().Next(0, 50)).ConfigureAwait(false);
+                var res = await _google.GetImageAsync(oterms, new NadekoRandom().Next(0, 50)).ConfigureAwait(false);
                 var embed = new EmbedBuilder()
                     .WithOkColor()
-                    .WithAuthor(eab => eab.WithName(GetText("image_search_for") + " " + terms.TrimTo(50))
+                    .WithAuthor(eab => eab.WithName(GetText("image_search_for") + " " + oterms.TrimTo(50))
                         .WithUrl("https://www.google.rs/search?q=" + terms + "&source=lnms&tbm=isch")
                         .WithIconUrl("http://i.imgur.com/G46fm8J.png"))
                     .WithDescription(res.Link)
@@ -386,7 +386,6 @@ namespace NadekoBot.Modules.Searches
             catch
             {
                 _log.Warn("Falling back to Imgur");
-                terms = WebUtility.UrlEncode(terms).Replace(' ', '+');
 
                 var fullQueryLink = $"http://imgur.com/search?q={ terms }";
                 var config = Configuration.Default.WithDefaultLoader();
@@ -406,7 +405,7 @@ namespace NadekoBot.Modules.Searches
 
                     var embed = new EmbedBuilder()
                         .WithOkColor()
-                        .WithAuthor(eab => eab.WithName(GetText("image_search_for") + " " + terms.TrimTo(50))
+                        .WithAuthor(eab => eab.WithName(GetText("image_search_for") + " " + oterms.TrimTo(50))
                             .WithUrl(fullQueryLink)
                             .WithIconUrl("http://s.imgur.com/images/logo-1200-630.jpg?"))
                         .WithDescription(source)
