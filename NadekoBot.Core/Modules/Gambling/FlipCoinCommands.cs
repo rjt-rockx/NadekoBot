@@ -42,7 +42,7 @@ namespace NadekoBot.Modules.Gambling
                     {
                         await Context.Channel.EmbedAsync(new EmbedBuilder()
                             .WithOkColor()
-                            .WithImageUrl(coins.Heads[rng.Next(0, coins.Heads.Length)].ToString())
+                            .WithThumbnailUrl(coins.Heads[rng.Next(0, coins.Heads.Length)].ToString())
                             .WithDescription(Context.User.Mention + " " + GetText("flipped", Format.Bold(GetText("heads"))))).ConfigureAwait(false);
 
                     }
@@ -50,7 +50,7 @@ namespace NadekoBot.Modules.Gambling
                     {
                         await Context.Channel.EmbedAsync(new EmbedBuilder()
                             .WithOkColor()
-                            .WithImageUrl(coins.Tails[rng.Next(0, coins.Tails.Length)].ToString())
+                            .WithThumbnailUrl(coins.Tails[rng.Next(0, coins.Tails.Length)].ToString())
                             .WithDescription(Context.User.Mention + " " + GetText("flipped", Format.Bold(GetText("tails"))))).ConfigureAwait(false);
 
                     }
@@ -135,7 +135,7 @@ namespace NadekoBot.Modules.Gambling
                 await Context.Channel.EmbedAsync(new EmbedBuilder()
                     .WithDescription(str)
                     .WithOkColor()
-                    .WithImageUrl(imageToSend.ToString())).ConfigureAwait(false);
+                    .WithThumbnailUrl(imageToSend.ToString())).ConfigureAwait(false);
             }
         }
     }
