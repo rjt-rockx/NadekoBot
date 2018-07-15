@@ -33,8 +33,7 @@ namespace NadekoBot.Modules.Searches.Services
 {
     public class SearchesService : INService, IUnloadableService
     {
-        public HttpClient Http { get; }
-
+        private readonly IHttpClientFactory _httpFactory;
         private readonly DiscordSocketClient _client;
         private readonly IGoogleApiService _google;
         private readonly DbService _db;
@@ -70,9 +69,11 @@ namespace NadekoBot.Modules.Searches.Services
 
                 if (data == null)
                 {
-                    data = await Http.GetStringAsync(new Uri("https://api.coinmarketcap.com/v1/ticker/"))
-                        .ConfigureAwait(false);
-
+                    using (var http = _httpFactory.CreateClient())
+                    {
+                        data = await http.GetStringAsync(new Uri("https://api.coinmarketcap.com/v1/ticker/"))
+                            .ConfigureAwait(false);
+                    }
                     await r.StringSetAsync("crypto_data", data, TimeSpan.FromHours(1)).ConfigureAwait(false);
                 }
             }
@@ -85,11 +86,10 @@ namespace NadekoBot.Modules.Searches.Services
         }
 
         public SearchesService(DiscordSocketClient client, IGoogleApiService google,
-            DbService db, NadekoBot bot, IDataCache cache,
+            DbService db, NadekoBot bot, IDataCache cache, IHttpClientFactory factory,
             FontProvider fonts)
         {
-            Http = new HttpClient();
-            Http.AddFakeHeaders();
+            _httpFactory = factory;
             _client = client;
             _google = google;
             _db = db;
@@ -110,8 +110,7 @@ namespace NadekoBot.Modules.Searches.Services
                 {
                     try
                     {
-                        var umsg = msg as SocketUserMessage;
-                        if (umsg == null)
+                        if (!(msg is SocketUserMessage umsg))
                             return;
 
                         if (!TranslatedChannels.TryGetValue(umsg.Channel.Id, out var autoDelete))
@@ -156,19 +155,24 @@ namespace NadekoBot.Modules.Searches.Services
             var (succ, data) = await _cache.TryGetImageDataAsync(imgUrl).ConfigureAwait(false);
             if (!succ)
             {
-                using (var temp = await Http.GetAsync(imgUrl, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false))
+                using (var http = _httpFactory.CreateClient())
+                using (var temp = await http.GetAsync(imgUrl, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false))
                 {
-                    if (temp.Content.Headers.ContentType.MediaType != "image/png"
-                        && temp.Content.Headers.ContentType.MediaType != "image/jpeg"
-                        && temp.Content.Headers.ContentType.MediaType != "image/gif")
+                    if (!temp.IsImage())
+                    {
                         data = null;
+                    }
                     else
                     {
-                        using (var tempDraw = Image.Load(await temp.Content.ReadAsStreamAsync().ConfigureAwait(false)))
+                        var imgData = await temp.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+                        using (var tempDraw = Image.Load(imgData))
                         {
                             tempDraw.Mutate(x => x.Resize(69, 70));
                             tempDraw.ApplyRoundedCorners(35);
-                            data = tempDraw.ToStream().ToArray();
+                            using (var tds = tempDraw.ToStream())
+                            {
+                                data = tds.ToArray();
+                            }
                         }
                     }
                 }
@@ -197,7 +201,7 @@ namespace NadekoBot.Modules.Searches.Services
                     WrapTextWidth = 190,
                 },
                 text,
-                _fonts.RipNameFont,
+                _fonts.WhiteneyBold.CreateFont(20),
                 Rgba32.Black,
                 new PointF(25, 225)));
 
@@ -231,13 +235,13 @@ namespace NadekoBot.Modules.Searches.Services
             {
                 var blacklistedTags = GetBlacklistedTags(guild.Value);
 
-                var cacher = _imageCacher.GetOrAdd(guild.Value, (key) => new SearchImageCacher());
+                var cacher = _imageCacher.GetOrAdd(guild.Value, (key) => new SearchImageCacher(_httpFactory));
 
                 return cacher.GetImage(tag, isExplicit, type, blacklistedTags);
             }
             else
             {
-                var cacher = _imageCacher.GetOrAdd(guild ?? 0, (key) => new SearchImageCacher());
+                var cacher = _imageCacher.GetOrAdd(guild ?? 0, (key) => new SearchImageCacher(_httpFactory));
 
                 return cacher.GetImage(tag, isExplicit, type);
             }
@@ -286,8 +290,11 @@ namespace NadekoBot.Modules.Searches.Services
 
         public async Task<string> GetYomamaJoke()
         {
-            var response = await Http.GetStringAsync(new Uri("http://api.yomomma.info/")).ConfigureAwait(false);
-            return JObject.Parse(response)["joke"].ToString() + " 😆";
+            using (var http = _httpFactory.CreateClient())
+            {
+                var response = await http.GetStringAsync(new Uri("http://api.yomomma.info/")).ConfigureAwait(false);
+                return JObject.Parse(response)["joke"].ToString() + " 😆";
+            }
         }
 
         public static async Task<(string Text, string BaseUri)> GetRandomJoke()
@@ -306,8 +313,11 @@ namespace NadekoBot.Modules.Searches.Services
 
         public async Task<string> GetChuckNorrisJoke()
         {
-            var response = await Http.GetStringAsync(new Uri("http://api.icndb.com/jokes/random/")).ConfigureAwait(false);
-            return JObject.Parse(response)["value"]["joke"].ToString() + " 😆";
+            using (var http = _httpFactory.CreateClient())
+            {
+                var response = await http.GetStringAsync(new Uri("http://api.icndb.com/jokes/random/")).ConfigureAwait(false);
+                return JObject.Parse(response)["value"]["joke"].ToString() + " 😆";
+            }
         }
 
         public Task Unload()

@@ -26,14 +26,16 @@ namespace NadekoBot.Modules.Administration
             private readonly NadekoBot _bot;
             private readonly IBotCredentials _creds;
             private readonly IDataCache _cache;
+            private readonly IHttpClientFactory _http;
 
             public SelfCommands(NadekoBot bot, DiscordSocketClient client,
-                IBotCredentials creds, IDataCache cache)
+                IBotCredentials creds, IDataCache cache, IHttpClientFactory http)
             {
                 _client = client;
                 _bot = bot;
                 _creds = creds;
                 _cache = cache;
+                _http = http;
             }
 
             [NadekoCommand, Usage, Description, Aliases]
@@ -389,14 +391,21 @@ namespace NadekoBot.Modules.Administration
                 if (string.IsNullOrWhiteSpace(img))
                     return;
 
-                using (var http = new HttpClient())
-                {
-                    using (var sr = await http.GetStreamAsync(img).ConfigureAwait(false))
-                    {
-                        var imgStream = new MemoryStream();
-                        await sr.CopyToAsync(imgStream).ConfigureAwait(false);
-                        imgStream.Position = 0;
+                if (!Uri.IsWellFormedUriString(img, UriKind.Absolute))
+                    return;
 
+                var uri = new Uri(img);
+
+                using (var http = _http.CreateClient())
+                using (var sr = await http.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false))
+                {
+                    if (!sr.IsImage())
+                        return;
+
+                    // i can't just do ReadAsStreamAsync because dicord.net's image poops itself
+                    var imgData = await sr.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+                    using (var imgStream = imgData.ToStream())
+                    {
                         await _client.CurrentUser.ModifyAsync(u => u.Avatar = new Image(imgStream)).ConfigureAwait(false);
                     }
                 }
@@ -500,7 +509,7 @@ namespace NadekoBot.Modules.Administration
             public async Task ImagesReload()
             {
                 _service.ReloadImages();
-                await ReplyConfirmLocalized("images_loaded", 0).ConfigureAwait(false);
+                await ReplyConfirmLocalized("images_loading", 0).ConfigureAwait(false);
             }
 
             [NadekoCommand, Usage, Description, Aliases]
