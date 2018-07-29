@@ -162,7 +162,7 @@
   },
   "slowmode": {
     "Cmd": "slowmode",
-    "Desc": "Toggles slowmode. Slowmode deletes any excess messages users type over the specified limit of messages per X seconds. To enable, specify a number of messages (-m) each user can send, and an interval in seconds (-i).  Disable by specifying no parameters.",
+    "Desc": "Toggles slowmode. Slowmode deletes any excess messages users type over the specified limit of messages per X seconds. To enable, specify a number of messages (-m) each user can send, and an interval in seconds (-s).  Disable by specifying no parameters.",
     "Usage": [
       "{0}slowmode -m 1 -s 5",
       "{0}slowmode"
@@ -1110,17 +1110,18 @@
   },
   "pick": {
     "Cmd": "pick",
-    "Desc": "Picks the currency planted in this channel. 60 seconds cooldown.",
+    "Desc": "Picks the currency planted in this channel. If the plant has a password, you need to specify it.",
     "Usage": [
-      "{0}pick"
+      "{0}pick",
+      "{0}pick passwd"
     ]
   },
   "plant": {
     "Cmd": "plant",
-    "Desc": "Spend an amount of currency to plant it in this channel. Default is 1. (If bot is restarted or crashes, the currency will be lost)",
+    "Desc": "Spend an amount of currency to plant it in this channel. Default is 1. You can specify the password after the amount. Password has to be alphanumeric and it will be trimmed down to 10 characters if it's longer.",
     "Usage": [
-      "{0}plant",
-      "{0}plant 5"
+      "{0}plant 5",
+      "{0}plant 10 meow"
     ]
   },
   "gencurrency": {
@@ -2300,9 +2301,9 @@
   },
   "autohentai": {
     "Cmd": "autohentai",
-    "Desc": "Posts a hentai every X seconds with a random tag from the provided tags. Use `|` to separate tags. 20 seconds minimum. Provide no parameters to disable.",
+    "Desc": "Posts a hentai every X seconds with a random tag from the provided tags. Use `|` to separate tag groups. Random group will be chosen every time the image is sent. Use `+` for multiple tags (max 2 per group). 20 seconds minimum. Provide no parameters to disable.",
     "Usage": [
-      "{0}autohentai 30 yuri|tail|long_hair",
+      "{0}autohentai 30 yuri+kissing|tail+long_hair",
       "{0}autohentai"
     ]
   },
@@ -3124,7 +3125,7 @@
   },
   "autobutts": {
     "Cmd": "autobutts",
-    "Desc": "Posts a butts every X seconds. 20 seconds minimum. Provide no parameters to disable.",
+    "Desc": "Posts a butt every X seconds. 20 seconds minimum. Provide no parameters to disable.",
     "Usage": [
       "{0}autobutts 30",
       "{0}autobutts"
@@ -3181,7 +3182,14 @@
   },
   "deletewaifus": {
     "cmd": "deletewaifus",
-    "desc": "Deletes everything from WaifuUpdates and WaifuInfo tables.",
+    "desc": "Deletes everything from WaifuUpdates, WaifuItem and WaifuInfo tables.",
+    "usage": [
+      "{0}deletewaifus"
+    ]
+  },
+  "deletewaifu": {
+    "cmd": "deletewaifu",
+    "desc": "Deletes everything from WaifuUpdates, WaifuItem and WaifuInfo tables for the specified user. Also makes specified user's waifus free.",
     "usage": [
       "{0}deletewaifus"
     ]

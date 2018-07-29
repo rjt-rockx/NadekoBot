@@ -106,6 +106,22 @@ namespace NadekoBot.Core.Services
             return Task.CompletedTask;
         }
 
+        public string GetDmGreetMsg(ulong id)
+        {
+            using (var uow = _db.UnitOfWork)
+            {
+                return uow.GuildConfigs.ForId(id, set => set)?.DmGreetMessageText;
+            }
+        }
+
+        public string GetGreetMsg(ulong gid)
+        {
+            using (var uow = _db.UnitOfWork)
+            {
+                return uow.GuildConfigs.ForId(gid, set => set).ChannelGreetMessageText;
+            }
+        }
+
         private Task UserJoined(IGuildUser user)
         {
             var _ = Task.Run(async () =>
@@ -196,9 +212,17 @@ namespace NadekoBot.Core.Services
             return Task.CompletedTask;
         }
 
+        public string GetByteMessage(ulong gid)
+        {
+            using (var uow = _db.UnitOfWork)
+            {
+                return uow.GuildConfigs.ForId(gid, set => set).ChannelByeMessageText;
+            }
+        }
+
         public GreetSettings GetOrAddSettingsForGuild(ulong guildId)
         {
-            if(GuildConfigsCache.TryGetValue(guildId, out var settings) && 
+            if (GuildConfigsCache.TryGetValue(guildId, out var settings) &&
                 settings != null)
                 return settings;
 
@@ -241,7 +265,7 @@ namespace NadekoBot.Core.Services
                 conf.SendChannelGreetMessage = settings.SendChannelGreetMessage;
                 conf.SendChannelByeMessage = settings.SendChannelByeMessage;
 
-                await uow.CompleteAsync().ConfigureAwait(false);
+                await uow.CompleteAsync();
 
                 var toAdd = GreetSettings.Create(conf);
                 GuildConfigsCache.AddOrUpdate(guildId, toAdd, (key, old) => toAdd);
@@ -262,7 +286,7 @@ namespace NadekoBot.Core.Services
                 var toAdd = GreetSettings.Create(conf);
                 GuildConfigsCache.AddOrUpdate(guildId, toAdd, (key, old) => toAdd);
 
-                await uow.CompleteAsync().ConfigureAwait(false);
+                await uow.CompleteAsync();
             }
             return enabled;
         }
@@ -300,7 +324,7 @@ namespace NadekoBot.Core.Services
                 var toAdd = GreetSettings.Create(conf);
                 GuildConfigsCache.AddOrUpdate(guildId, toAdd, (key, old) => toAdd);
 
-                await uow.CompleteAsync().ConfigureAwait(false);
+                await uow.CompleteAsync();
             }
             return enabled;
         }
@@ -339,7 +363,7 @@ namespace NadekoBot.Core.Services
                 var toAdd = GreetSettings.Create(conf);
                 GuildConfigsCache.AddOrUpdate(guildId, toAdd, (key, old) => toAdd);
 
-                await uow.CompleteAsync().ConfigureAwait(false);
+                await uow.CompleteAsync();
             }
             return enabled;
         }
@@ -379,7 +403,7 @@ namespace NadekoBot.Core.Services
                 var toAdd = GreetSettings.Create(conf);
                 GuildConfigsCache.AddOrUpdate(guildId, toAdd, (key, old) => toAdd);
 
-                await uow.CompleteAsync().ConfigureAwait(false);
+                await uow.CompleteAsync();
             }
         }
 
@@ -396,7 +420,7 @@ namespace NadekoBot.Core.Services
                 var toAdd = GreetSettings.Create(conf);
                 GuildConfigsCache.AddOrUpdate(id, toAdd, (key, old) => toAdd);
 
-                await uow.CompleteAsync().ConfigureAwait(false);
+                await uow.CompleteAsync();
             }
         }
     }
