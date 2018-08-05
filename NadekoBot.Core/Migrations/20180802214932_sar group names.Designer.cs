@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NadekoBot.Core.Services.Database;
 
 namespace NadekoBot.Migrations
 {
     [DbContext(typeof(NadekoContext))]
-    partial class NadekoSqliteContextModelSnapshot : ModelSnapshot
+    [Migration("20180802214932_sar group names")]
+    partial class sargroupnames
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -379,8 +381,6 @@ namespace NadekoBot.Migrations
                     b.Property<string>("Response");
 
                     b.Property<string>("Trigger");
-
-                    b.Property<ulong>("UseCount");
 
                     b.HasKey("Id");
 
@@ -1123,8 +1123,6 @@ namespace NadekoBot.Migrations
 
                     b.Property<string>("Text")
                         .IsRequired();
-
-                    b.Property<ulong>("UseCount");
 
                     b.HasKey("Id");
 
