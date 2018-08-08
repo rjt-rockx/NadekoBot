@@ -199,7 +199,7 @@ namespace NadekoBot.Modules.Gambling
             }
 
             private static long GetProfitAmount(int price) =>
-                (int)(Math.Ceiling(0.90 * price));
+                (int)(Math.Ceiling(0.75 * price));
 
             [NadekoCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
