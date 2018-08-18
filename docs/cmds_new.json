@@ -287,6 +287,21 @@
     },
     {
       "Aliases": [
+        ".deleteunusedcrnq"
+      ],
+      "Description": "Deletes all quotes and custom reactions which are older than a week and haven't been used a single time.",
+      "Usage": [
+        ".deleteunusedcrnq"
+      ],
+      "Submodule": "DangerousCommands",
+      "Module": "Administration",
+      "Options": null,
+      "Requirements": [
+        "Bot Owner Only"
+      ]
+    },
+    {
+      "Aliases": [
         ".gvc"
       ],
       "Description": "Toggles game voice channel feature in the voice channel you're currently in. Users who join the game voice channel will get automatically redirected to the voice channel with the name of their current game, if it exists. Can't move users to channels that the bot has no connect permission for. One per server.",
@@ -690,38 +705,6 @@
       "Module": "Administration",
       "Options": null,
       "Requirements": []
-    },
-    {
-      "Aliases": [
-        ".slowmode"
-      ],
-      "Description": "Toggles slowmode. Slowmode deletes any excess messages users type over the specified limit of messages per X seconds. To enable, specify a number of messages (-m) each user can send, and an interval in seconds (-s).  Disable by specifying no parameters.",
-      "Usage": [
-        ".slowmode -m 1 -s 5",
-        ".slowmode"
-      ],
-      "Submodule": "SlowModeCommands",
-      "Module": "Administration",
-      "Options": "`--message-count` (`-m`)   Number of messages user can send.  \n`--seconds` (`-s`)   Interval in which the user can send the specified number of messages.  ",
-      "Requirements": [
-        "ManageMessages Server Permission"
-      ]
-    },
-    {
-      "Aliases": [
-        ".slowmodewl"
-      ],
-      "Description": "Ignores a role or a user from the slowmode feature.",
-      "Usage": [
-        ".slowmodewl SomeRole",
-        ".slowmodewl AdminDude"
-      ],
-      "Submodule": "SlowModeCommands",
-      "Module": "Administration",
-      "Options": null,
-      "Requirements": [
-        "ManageMessages Server Permission"
-      ]
     },
     {
       "Aliases": [
@@ -1547,6 +1530,38 @@
     },
     {
       "Aliases": [
+        ".slowmode"
+      ],
+      "Description": "Toggles slowmode. Slowmode deletes any excess messages users type over the specified limit of messages per X seconds. To enable, specify a number of messages (-m) each user can send, and an interval in seconds (-s).  Disable by specifying no parameters.",
+      "Usage": [
+        ".slowmode -m 1 -s 5",
+        ".slowmode"
+      ],
+      "Submodule": "SlowmodeCommands",
+      "Module": "Administration",
+      "Options": "`--message-count` (`-m`)   Number of messages user can send.  \n`--seconds` (`-s`)   Interval in which the user can send the specified number of messages.  ",
+      "Requirements": [
+        "ManageMessages Server Permission"
+      ]
+    },
+    {
+      "Aliases": [
+        ".slowmodewl"
+      ],
+      "Description": "Ignores a role or a user from the slowmode feature.",
+      "Usage": [
+        ".slowmodewl SomeRole",
+        ".slowmodewl AdminDude"
+      ],
+      "Submodule": "SlowmodeCommands",
+      "Module": "Administration",
+      "Options": null,
+      "Requirements": [
+        "ManageMessages Server Permission"
+      ]
+    },
+    {
+      "Aliases": [
         ".timezones"
       ],
       "Description": "Lists all timezones available on the system to be used with `.timezone`.",
@@ -1920,6 +1935,21 @@
       "Module": "CustomReactions",
       "Options": null,
       "Requirements": []
+    },
+    {
+      "Aliases": [
+        ".crsreload"
+      ],
+      "Description": "Reloads all custom reactions on all shards. Use this if you've made changes to the database while the bot is running, or used `.deleteunusedcrnq`",
+      "Usage": [
+        ".crsreload"
+      ],
+      "Submodule": "CustomReactions",
+      "Module": "CustomReactions",
+      "Options": null,
+      "Requirements": [
+        "Bot Owner Only"
+      ]
     },
     {
       "Aliases": [

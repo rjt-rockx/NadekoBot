@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NadekoBot.Core.Services.Database;
 
 namespace NadekoBot.Migrations
 {
     [DbContext(typeof(NadekoContext))]
-    partial class NadekoSqliteContextModelSnapshot : ModelSnapshot
+    [Migration("20180807140225_restore-gcr")]
+    partial class restoregcr
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -603,7 +605,7 @@ namespace NadekoBot.Migrations
 
                     b.Property<DateTime?>("DateAdded");
 
-                    b.Property<int>("GuildConfigId");
+                    b.Property<int?>("GuildConfigId");
 
                     b.Property<string>("Name");
 
@@ -611,7 +613,9 @@ namespace NadekoBot.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GuildConfigId", "Number")
+                    b.HasIndex("GuildConfigId");
+
+                    b.HasIndex("Number")
                         .IsUnique();
 
                     b.ToTable("GroupName");
@@ -1933,10 +1937,9 @@ namespace NadekoBot.Migrations
 
             modelBuilder.Entity("NadekoBot.Core.Services.Database.Models.GroupName", b =>
                 {
-                    b.HasOne("NadekoBot.Core.Services.Database.Models.GuildConfig", "GuildConfig")
+                    b.HasOne("NadekoBot.Core.Services.Database.Models.GuildConfig")
                         .WithMany("SelfAssignableRoleGroupNames")
-                        .HasForeignKey("GuildConfigId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("GuildConfigId");
                 });
 
             modelBuilder.Entity("NadekoBot.Core.Services.Database.Models.GuildConfig", b =>
