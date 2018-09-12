@@ -57,7 +57,10 @@ namespace NadekoBot.Common.Replacements
                 }
 
             if (embedData.Footer != null)
+            {
                 embedData.Footer.Text = Replace(embedData.Footer.Text);
+                embedData.Footer.IconUrl = Replace(embedData.Footer.IconUrl);
+            }
         }
     }
 }

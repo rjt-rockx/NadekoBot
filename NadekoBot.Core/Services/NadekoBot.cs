@@ -90,6 +90,7 @@ namespace NadekoBot
                 ShardId = shardId,
                 AlwaysDownloadUsers = false,
             });
+
             CommandService = new CommandService(new CommandServiceConfig()
             {
                 CaseSensitiveCommands = false,
@@ -155,6 +156,10 @@ namespace NadekoBot
             using (var uow = _db.UnitOfWork)
             {
                 var sw = Stopwatch.StartNew();
+
+                var _bot = Client.CurrentUser;
+
+                uow.DiscordUsers.EnsureCreated(_bot.Id, _bot.Username, _bot.Discriminator, _bot.AvatarId);
 
                 AllGuildConfigs = uow.GuildConfigs.GetAllGuildConfigs(startingGuildIdList).ToImmutableArray();
 
@@ -366,7 +371,8 @@ namespace NadekoBot
             catch
             {
                 _log.Error("You must run the application as an ADMINISTRATOR.");
-                Console.ReadKey();
+                if (!Console.IsInputRedirected)
+                    Console.ReadKey();
                 Environment.Exit(2);
             }
         }

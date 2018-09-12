@@ -6,7 +6,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
+using NadekoBot.Common;
 using NadekoBot.Common.Collections;
+using NadekoBot.Core.Modules.Xp.Common;
 using NadekoBot.Core.Services;
 using NadekoBot.Core.Services.Database.Models;
 using NadekoBot.Core.Services.Impl;
@@ -30,59 +32,69 @@ using SixLabors.ImageSharp.Processing.Drawing.Pens;
 using SixLabors.ImageSharp.Processing.Text;
 using SixLabors.ImageSharp.Processing.Transforms;
 using SixLabors.Primitives;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Image = SixLabors.ImageSharp.Image;
 
 namespace NadekoBot.Modules.Xp.Services {
     public class XpService : INService, IUnloadableService {
         private enum NotifOf { Server, Global } // is it a server level-up or global level-up notification
 
- private readonly DbService _db;
- private readonly CommandHandler _cmd;
- private readonly IBotConfigProvider _bc;
- private readonly IImageCache _images;
- private readonly Logger _log;
- private readonly NadekoStrings _strings;
- private readonly IDataCache _cache;
- private readonly FontProvider _fonts;
- private readonly IBotCredentials _creds;
- private readonly ICurrencyService _cs;
- public const int XP_REQUIRED_LVL_1 = 36;
+        private readonly DbService _db;
+        private readonly CommandHandler _cmd;
+        private readonly IBotConfigProvider _bc;
+        private readonly IImageCache _images;
+        private readonly Logger _log;
+        private readonly NadekoStrings _strings;
+        private readonly IDataCache _cache;
+        private readonly FontProvider _fonts;
+        private readonly IBotCredentials _creds;
+        private readonly ICurrencyService _cs;
+        public const int XP_REQUIRED_LVL_1 = 36;
 
- private readonly ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>> _excludedRoles = new ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>> ();
+        private readonly ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>> _excludedRoles
+            = new ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>>();
 
- private readonly ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>> _excludedChannels = new ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>> ();
+        private readonly ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>> _excludedChannels
+            = new ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>>();
 
- private readonly ConcurrentHashSet<ulong> _excludedServers = new ConcurrentHashSet<ulong> ();
+        private readonly ConcurrentHashSet<ulong> _excludedServers
+            = new ConcurrentHashSet<ulong>();
 
- private readonly ConcurrentHashSet<ulong> _rewardedUsers = new ConcurrentHashSet<ulong> ();
+        private readonly ConcurrentQueue<UserCacheItem> _addMessageXp
+            = new ConcurrentQueue<UserCacheItem>();
 
- private readonly ConcurrentQueue<UserCacheItem> _addMessageXp = new ConcurrentQueue<UserCacheItem> ();
+        private readonly Task updateXpTask;
+        private readonly IHttpClientFactory _httpFactory;
+        private XpTemplate _template;
 
- private readonly Task updateXpTask;
- private readonly CancellationTokenSource _clearRewardTimerTokenSource;
- private readonly Task _clearRewardTimer;
- private readonly IHttpClientFactory _httpFactory;
- private XpTemplate _template;
+        public XpService(DiscordSocketClient client, CommandHandler cmd, IBotConfigProvider bc,
+            NadekoBot bot, DbService db, NadekoStrings strings, IDataCache cache,
+            FontProvider fonts, IBotCredentials creds, ICurrencyService cs, IHttpClientFactory http)
+        {
+            _db = db;
+            _cmd = cmd;
+            _bc = bc;
+            _images = cache.LocalImages;
+            _log = LogManager.GetCurrentClassLogger();
+            _strings = strings;
+            _cache = cache;
+            _fonts = fonts;
+            _creds = creds;
+            _cs = cs;
+            _httpFactory = http;
+            InternalReloadXpTemplate();
 
- public XpService (DiscordSocketClient client, CommandHandler cmd, IBotConfigProvider bc,
- NadekoBot bot, DbService db, NadekoStrings strings, IDataCache cache,
- FontProvider fonts, IBotCredentials creds, ICurrencyService cs, IHttpClientFactory http) {
- _db = db;
- _cmd = cmd;
- _bc = bc;
- _images = cache.LocalImages;
- _log = LogManager.GetCurrentClassLogger ();
- _strings = strings;
- _cache = cache;
- _fonts = fonts;
- _creds = creds;
- _cs = cs;
- _httpFactory = http;
- InternalReloadXpTemplate ();
-
- if (client.ShardId == 0) {
- var sub = _cache.Redis.GetSubscriber ();
- sub.Subscribe (_creds.RedisKey () + "_reload_xp_template",
- (ch, val) => InternalReloadXpTemplate ());
+            if (client.ShardId == 0)
+            {
+                var sub = _cache.Redis.GetSubscriber();
+                sub.Subscribe(_creds.RedisKey() + "_reload_xp_template",
+                    (ch, val) => InternalReloadXpTemplate());
             }
             //load settings
             var allGuildConfigs = bot.AllGuildConfigs.Where (x => x.XpSettings != null);
@@ -230,18 +242,6 @@ namespace NadekoBot.Modules.Xp.Services {
                     }
                 }
             });
-
-            _clearRewardTimerTokenSource = new CancellationTokenSource ();
-            var token = _clearRewardTimerTokenSource.Token;
-            //just a first line, in order to prevent queries. But since other shards can try to do this too,
-            //i'll check in the db too.
-            _clearRewardTimer = Task.Run (async () => {
-                while (!token.IsCancellationRequested) {
-                    _rewardedUsers.Clear ();
-
-                    await Task.Delay (TimeSpan.FromMinutes (_bc.BotConfig.XpMinutesTimeout));
-                }
-            }, token);
         }
 
         private void InternalReloadXpTemplate () {
@@ -790,11 +790,25 @@ namespace NadekoBot.Modules.Xp.Services {
 
         public Task Unload () {
             _cmd.OnMessageNoTrigger -= _cmd_OnMessageNoTrigger;
-
-            if (!_clearRewardTimerTokenSource.IsCancellationRequested)
-                _clearRewardTimerTokenSource.Cancel ();
-            _clearRewardTimerTokenSource.Dispose ();
             return Task.CompletedTask;
+        }
+
+        public void XpReset(ulong guildId, ulong userId)
+        {
+            using (var uow = _db.UnitOfWork)
+            {
+                uow.Xp.ResetGuildUserXp(userId, guildId);
+                uow.Complete();
+            }
+        }
+
+        public void XpReset(ulong guildId)
+        {
+            using (var uow = _db.UnitOfWork)
+            {
+                uow.Xp.ResetGuildXp(guildId);
+                uow.Complete();
+            }
         }
     }
 }

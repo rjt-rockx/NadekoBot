@@ -78,7 +78,9 @@ namespace NadekoBot.Core.Services
             _log.Info("Starting NadekoBot v" + StatsService.BotVersion);
 
             _key = _creds.RedisKey();
-            _redis = ConnectionMultiplexer.Connect("127.0.0.1");
+
+            var conf = ConfigurationOptions.Parse(_creds.RedisOptions);
+            _redis = ConnectionMultiplexer.Connect(conf);
 
             var imgCache = new RedisImagesCache(_redis, _creds); //reload images into redis
             if (!imgCache.AllKeysExist().GetAwaiter().GetResult()) // but only if the keys don't exist. If images exist, you have to reload them manually
@@ -116,7 +118,7 @@ namespace NadekoBot.Core.Services
                 else
                     _shardProcesses[id] = Process.GetCurrentProcess();
 #else
-                _shardStartQueue.Enqueue(i);
+                _shardStartQueue.Enqueue(id);
 #endif
                 //set the shard's initial state in redis cache
                 var msg = _defaultShardState.Clone();

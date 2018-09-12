@@ -1589,8 +1589,8 @@
       "{0}ani aquarion evol"
     ]
   },
-  "imdb": {
-    "Cmd": "imdb omdb",
+  "movie": {
+    "Cmd": "movie omdb imdb",
     "Desc": "Queries omdb for movies or series, show first result.",
     "Usage": [
       "{0}imdb Batman vs Superman"
@@ -1632,14 +1632,7 @@
     ]
   },
   "image": {
-    "Cmd": "image img",
-    "Desc": "Pulls the first image found using a search parameter. Use `{0}rimg` for different results.",
-    "Usage": [
-      "{0}img cute kitten"
-    ]
-  },
-  "randomimage": {
-    "Cmd": "randomimage rimg",
+    "Cmd": "image img rimg",
     "Desc": "Pulls a random image using a search parameter.",
     "Usage": [
       "{0}rimg cute kitten"
@@ -2793,7 +2786,7 @@
   },
   "shopadd": {
     "Cmd": "shopadd",
-    "Desc": "Adds an item to the shop by specifying type price and name. Available types are role and list.",
+    "Desc": "Adds an item to the shop by specifying type price and name. Available types are role and list. 90% of currency from each purchase will be received by the user who added the item to the shop.",
     "Usage": [
       "{0}shopadd role 1000 Rich"
     ]
