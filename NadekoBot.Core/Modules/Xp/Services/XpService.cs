@@ -165,7 +165,7 @@ namespace NadekoBot.Modules.Xp.Services {
                                 if (oldGlobalLevelData.Level < newGlobalLevelData.Level) {
                                     du.LastLevelUp = DateTime.UtcNow;
                                     var first = item.First ();
-                                    if (du.NotifyOnLevelUp != XpNotificationType.None)
+                                    if (du.NotifyOnLevelUp != XpNotificationType.None && du.TotalXp != usr.Xp)
                                         toNotify.Add ((first.Channel, first.User, newGlobalLevelData.Level, du.NotifyOnLevelUp, NotifOf.Global));
                                 }
 
