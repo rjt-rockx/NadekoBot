@@ -2,36 +2,33 @@
   "Version": 3,
   "Coins": {
     "Heads": [
-      "https://nadeko-pictures.nyc3.digitaloceanspaces.com/other/coins/heads.png"
+      "https://i.imgur.com/rlLWef6.png"
     ],
     "Tails": [
-      "https://nadeko-pictures.nyc3.digitaloceanspaces.com/other/coins/tails.png"
+      "https://i.imgur.com/RZbqSXA.png"
     ]
   },
   "Currency": [
-    "https://nadeko-pictures.nyc3.digitaloceanspaces.com/other/currency/0.png",
-    "https://nadeko-pictures.nyc3.digitaloceanspaces.com/other/currency/1.png",
-    "https://nadeko-pictures.nyc3.digitaloceanspaces.com/other/currency/2.png",
-    "https://nadeko-pictures.nyc3.digitaloceanspaces.com/other/currency/3.png"
+    "https://i.imgur.com/YN1fy4o.png"
   ],
   "Dice": [
-    "https://nadeko-pictures.nyc3.digitaloceanspaces.com/other/dice/0.png",
-    "https://nadeko-pictures.nyc3.digitaloceanspaces.com/other/dice/1.png",
-    "https://nadeko-pictures.nyc3.digitaloceanspaces.com/other/dice/2.png",
-    "https://nadeko-pictures.nyc3.digitaloceanspaces.com/other/dice/3.png",
-    "https://nadeko-pictures.nyc3.digitaloceanspaces.com/other/dice/4.png",
-    "https://nadeko-pictures.nyc3.digitaloceanspaces.com/other/dice/5.png",
-    "https://nadeko-pictures.nyc3.digitaloceanspaces.com/other/dice/6.png",
-    "https://nadeko-pictures.nyc3.digitaloceanspaces.com/other/dice/7.png",
-    "https://nadeko-pictures.nyc3.digitaloceanspaces.com/other/dice/8.png",
-    "https://nadeko-pictures.nyc3.digitaloceanspaces.com/other/dice/9.png"
+    "https://i.imgur.com/KyOfDw1.png",
+    "https://i.imgur.com/IX8xjZ3.png",
+    "https://i.imgur.com/k9GqKp5.png",
+    "https://i.imgur.com/rmhTSnp.png",
+    "https://i.imgur.com/93PUmFr.png",
+    "https://i.imgur.com/CMBCJRC.png",
+    "https://i.imgur.com/VqhUpsV.png",
+    "https://i.imgur.com/r6rFCuT.png",
+    "https://i.imgur.com/eIxuOpg.png",
+    "https://i.imgur.com/At9YgRO.png"
   ],
   "Rategirl": {
-    "Matrix": "https://nadeko-pictures.nyc3.digitaloceanspaces.com/other/rategirl/matrix.png",
-    "Dot": "https://nadeko-pictures.nyc3.digitaloceanspaces.com/other/rategirl/dot.png"
+    "Matrix": "https://i.imgur.com/z7yySqA.png",
+    "Dot": "https://i.imgur.com/TpubajW.png"
   },
   "Xp": {
-    "Bg": "https://nadeko-pictures.nyc3.digitaloceanspaces.com/other/xp/bg.png"
+    "Bg": "https://i.imgur.com/bnGUPql.png"
   },
   "Rip": {
     "Bg": "https://nadeko-pictures.nyc3.digitaloceanspaces.com/other/rip/rip.png",
