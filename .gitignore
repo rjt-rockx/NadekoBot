@@ -360,3 +360,7 @@ __pycache__/
 
 ### VisualStudio Patch ###
 build/
+src/NadekoBot/credentials.json
+src/NadekoBot/libopus.so
+src/NadekoBot/libsodium.so
+src/NadekoBot/dump.rdb
