@@ -38,7 +38,7 @@ namespace NadekoBot.Core.Services.Impl
         }
 
         // things here so far don't need the bot id
-        // because it's a good thing if different bots 
+        // because it's a good thing if different bots
         // which are hosted on the same PC
         // can re-use the same image/anime data
         public async Task<(bool Success, byte[] Data)> TryGetImageDataAsync(Uri key)

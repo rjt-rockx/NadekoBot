@@ -91,10 +91,10 @@ namespace NadekoBot.Core.Services.Database.Repositories.Impl
             //               w.New != null));
 
             return _context.Set<WaifuUpdate>()
-                .FromSql($@"SELECT 1 
+                .FromSql($@"SELECT 1
 FROM WaifuUpdates
-WHERE UserId = (SELECT Id from DiscordUser WHERE UserId={userId}) AND 
-    UpdateType = 0 AND 
+WHERE UserId = (SELECT Id from DiscordUser WHERE UserId={userId}) AND
+    UpdateType = 0 AND
     NewId IS NOT NULL")
                 .Count();
         }
