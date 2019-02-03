@@ -51,11 +51,11 @@ namespace NadekoBot.Modules.Gambling
                 await Context.Channel.SendConfirmAsync(
 Format.Bold($@"{Context.User.ToString()} won: {result.Amount + Bc.BotConfig.CurrencySign}
 
-[{Wof.Multipliers[1]}]     [{Wof.Multipliers[0]}]    [{Wof.Multipliers[7]}]
+[{Wof.Multipliers[1]}]   [{Wof.Multipliers[0]}]   [{Wof.Multipliers[7]}]
 
-[{Wof.Multipliers[2]}]     {_emojis[result.Index]}     [{Wof.Multipliers[6]}]
+[{Wof.Multipliers[2]}]    {_emojis[result.Index]}    [{Wof.Multipliers[6]}]
 
-[{Wof.Multipliers[3]}]   [{Wof.Multipliers[4]}]   [{Wof.Multipliers[5]}]")).ConfigureAwait(false);
+[{Wof.Multipliers[3]}]  [{Wof.Multipliers[4]}]   [{Wof.Multipliers[5]}]")).ConfigureAwait(false);
             }
         }
     }
