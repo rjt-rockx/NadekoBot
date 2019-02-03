@@ -7,7 +7,7 @@
     "Name": {
       "Color": "ffffffff",
       "Show": true,
-      "FontSize": 33,
+      "FontSize": 28,
       "Pos": {
         "X": 100,
         "Y": 360
@@ -155,9 +155,9 @@
     "Name": {
       "Color": "ffffffff",
       "Show": true,
-      "FontSize": 33,
+      "FontSize": 28,
       "Pos": {
-        "X": 770,
+        "X": 700,
         "Y": 360
       }
     }
