@@ -21,7 +21,7 @@ namespace NadekoBot.Modules.Gambling.Common.WheelOfFortune
             0.1f,
             0.7f,
             1.6f,
-            2.5f,
+            2.5f
         }.ToImmutableArray();
 
         private readonly NadekoRandom _rng;
