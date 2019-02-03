@@ -39,7 +39,7 @@
       "FontSize": 45,
       "Pos": {
         "X": 270,
-        "Y": 40
+        "Y": 45
       }
     },
     "GlobalRank": {
@@ -47,7 +47,7 @@
       "Show": true,
       "FontSize": 45,
       "Pos": {
-        "X": 580,
+        "X": 550,
         "Y": 195
       }
     },
@@ -56,8 +56,8 @@
       "Show": true,
       "FontSize": 45,
       "Pos": {
-        "X": 580,
-        "Y": 40
+        "X": 550,
+        "Y": 45
       }
     },
     "TimeOnLevel": {
@@ -126,7 +126,7 @@
         "FontSize": 45,
         "Pos": {
           "X": 20,
-          "Y": 40
+          "Y": 45
         }
       },
       "Awarded": {
